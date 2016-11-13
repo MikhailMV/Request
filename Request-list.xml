@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Список_заявок>
+	<Заявка_1>
+		<login_user>
+			qwerty
+		</login_user>
+		<request_name>
+			Заявка
+		</request_name>
+	</Заявка_1>
+	<Заявка_2>
+		<login_user>
+			123
+		</login_user>
+		<request_name>
+			заявка2
+		</request_name>
+	</Заявка_2>
+	<Заявка_3>
+		<login_user>
+			admin
+		</login_user>
+		<request_name>
+			Заявка 3
+		</request_name>
+	</Заявка_3>
+	<Заявка_4>
+		<login_user>
+			123
+		</login_user>
+		<request_name>
+			Заявка 4
+		</request_name>
+	</Заявка_4>
+	<Заявка_5>
+		<login_user>
+			123
+		</login_user>
+		<request_name>
+			Очередная заявка
+		</request_name>
+	</Заявка_5>
+	<Заявка_6>
+		<login_user>
+			123
+		</login_user>
+		<request_name>
+			И вновь заявка
+		</request_name>
+	</Заявка_6>
+</Список_заявок>

@@ -1,0 +1,129 @@
+<style>
+
+    *, *:before, *:after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        height: 100%;
+    }
+
+    body {
+        font: 14px/1 'Open Sans', sans-serif;
+        color: #555;
+        background: #eee;
+    }
+
+    main {
+        min-width: 320px;
+        max-width: 800px;
+        padding: 50px;
+        margin: 0 auto;
+        background: #fff;
+    }
+
+    .js-req-table {
+        width: 100%;
+        border: 1px solid #ccc;
+        padding: 10px;
+        position: relative;                    
+    }
+    
+    .js-req-table tr:hover {
+        background-color: #fafad2;
+    }
+    
+    .js-req-table td {
+        padding: 4px;
+    }
+    
+    .title td {
+        border-bottom: 1px solid #ccc;
+        background-color: aquamarine;
+    }
+    
+    .btn {
+        font-family: Arial;
+        color: #ffffff;
+        font-size: 14px;
+        background: #3498db;
+        padding: 6px 20px;
+        text-decoration: none;
+        position: relative;
+        top: 10px;
+        cursor: pointer;
+        border: none;
+    }
+    
+    .btn:hover {
+        background: #3cb0fd;
+        text-decoration: none;
+    }
+    
+    .welcome {
+        width: 100%;
+        padding: 10px;
+        bottom: 10px;
+        position: relative;
+    }
+    
+    .join {
+        width: 100%;            
+        padding: 10px;
+        position: relative;            
+    }    
+    
+    .reg {        
+        position: relative;
+        top: 76px;
+        left: 91px;
+        padding: 7px 20px;
+    }
+    
+    .auth {        
+        position: relative;
+        top: 117px;
+        left: 135px;
+        padding: 7px 20px;
+    }
+    
+    .login {        
+        position: relative;        
+        left: 11px;
+    }
+    
+    .back {
+        position: relative;        
+        padding: 7px 20px;
+    }
+    
+    .xml {
+        position: relative;        
+        left: 4px;
+    }
+    
+    .name {
+        position: relative;        
+        width: 500px;
+        left: 4px;
+    }
+    
+    .phone {
+        position: relative;        
+        width: 500px;
+        left: 7px;
+    }
+    
+    .descr {
+        position: relative;        
+        width: 500px;
+    }
+    
+    .after-auth {
+        position: relative;
+        top: 20px;        
+    }
+    
+</style>
