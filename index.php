@@ -12,7 +12,6 @@ include_once 'conf.php';
 <main>
 
 <?php
-$inner_html = '';
 $auth = new auth();
 
 // Авторизация
@@ -27,37 +26,31 @@ if (isset($_POST['send'])) {
 if (isset($_GET['exit'])) $auth->exit_user();
 
 // Проверка авторизации
-if ($auth->check()) 
-    $inner_html .= '
+if ($auth->check()): ?>
         <div class="welcome">
-            Добро пожаловать, '.$_SESSION['login_user'].'<br/>
+            Добро пожаловать, <?print $_SESSION['login_user']?><br/>
             <a href="?exit" class="btn">Выйти</a>
         </div>
-        ';
-else {
-	// Выводим в случае ошибок 
-	if (isset($error)) $inner_html .= $error;
+<? else: ?>	 
+	<? if (isset($error)) print $error; ?>
 
-	// Отображение формы регистрации
-    $inner_html .= '
         <div class="join">
             <a href="join.php" class="btn reg">Зарегистрироваться</a>
             <form action="" method="post"class="auth-form">
-                Логин <input type="text" name="login" value="'.@$_POST['login'].'" class="login"/><br />
+                Логин <input type="text" name="login" value="<?isset($_POST['login']) ? $_POST['login'] :''?>" class="login"/><br />
                 Пароль <input type="password" name="passwd"/><br />
                 <input type="submit" value="Войти" name="send" class="btn"/>
             </form>
         </div>
-        ';
-}
-print $inner_html;
+        
+<? endif?>
+<?php
 
 // Вывод таблицы заявок
 print (get_request_table());
 
 // Выделение последней добавленной заявки
-if (isset($_GET['stress'])) shine_last_row(); 
-
+if (isset($_GET['stress'])) shine_last_row();
 ?>
 
 </main>

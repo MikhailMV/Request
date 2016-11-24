@@ -11,41 +11,32 @@ include_once 'conf.php';
 <body>
 <main>
 
-<?php
-$table = '';
 
-// Вывод полной информации о заявке
-$table .= '
-    <div>
-        <table class="js-req-table"><tr class="title">
-            <td>Пользователь</td>
-            <td>Заявка</td>
-            <td>Описание</td>
-            <td>Телефон</td></tr>
-    ';
+<div>
+    <table class="js-req-table"><tr class="title">
+        <td>Пользователь</td><td>Заявка</td><td>Описание</td><td>Телефон</td><td>Изображение</td></tr>
     
+<?php    
     // Выбор информации из базы
     global $dbh;
-    $Rname = str_replace("'", "", ($dbh->quote($_GET['name'])));    
-    $stmt =  $dbh->prepare('SELECT users.login_user, request.request_name, request.description, request.phone
+    $Rname = $_GET['name'];    
+    $stmt =  $dbh->prepare('SELECT users.login_user, request.request_name, request.description, request.phone, request.image 
                             FROM users RIGHT JOIN request 
                             ON request.owner_id = users.id_user
                             WHERE request.request_name = ?');
     $stmt->bindParam(1, $Rname);
     $stmt->execute();
     $result = $stmt->FETCH(PDO::FETCH_ASSOC);
-    
-    $table .= '
-        <tr>
-        <td>'.$result['login_user']  .'</td>
-        <td>'.$result['request_name'].'</td>
-        <td>'.$result['description'] .'</td>
-        <td>'.$result['phone']       .'</td></tr></table>
-    ';
-print $table;
 ?>
-
-<a href="index.php" class="btn">Назад</a>
+        <tr>
+            <td><? print $result['login_user']?></td>
+            <td><? print $result['request_name']?></td>
+            <td><? print $result['description']?></td>
+            <td><? print $result['phone']?></td>            
+            <td><a href="<? print $result['image']?>"><img src="<? print $result['image']?>" width="200px" height="200px"/></a></td>
+        </tr>
+    </table>
+    <a href="index.php" class="btn">Назад</a>
 </div>
 
 </main>

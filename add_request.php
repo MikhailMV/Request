@@ -12,43 +12,71 @@ include_once 'conf.php';
 <main>
 
 <?php
-$inner_html = '';
+// Проверка авторизации пользователя
+if (!isset($_SESSION['login_user'])) {
+    print "<script type='text/javascript'>
+        window.location = 'index.php'
+        </script>";
+}
 
 if (isset($_POST['add'])) {
     
     // Выдод ошибок, если они есть
     if (!check_add_data($_POST['name'], $_POST['description'], ($_POST['phone']))) {
-        $inner_html.=error_print($_SESSION['error']);
+        print error_print($_SESSION['error']);
         unset ($_SESSION['error']);        
     }
     
     // Добавляем заявку в случае отсутствия ошибок
     else {         
-        add_new_request($_POST['name'], $_POST['description'], $_POST['phone']);
-        
-        // переходим на главную после добавления заявки
-        print "<script type='text/javascript'>
-               window.location = 'index.php?stress'
-               </script>";         
+        add_new_request($_POST['name'], $_POST['description'], $_POST['phone']);       
+                 
     }    
 }
-  
-$inner_html .= '
+?>  
     <div class="add-page">
-        <form action="" method="post" class="add-form">
+        <form action="" method="post" class="add-form" ENCTYPE="multipart/form-data">
     		Название <input type="text" name="name" class="name"/><br />
     		Телефон <input type="text" name="phone" class="phone"/><br />
-            Описание <input type="text" name="description" class="descr"/><br />
-            
-    		<input type="submit" value="Добавить" name="add" class="btn"/>        
-            <a href="index.php" class="btn back">Назад</a>
+            Описание <input type="text" name="description" class="descr"/><br />   
+            Размер изображения не превышает 512 Кб, пиксели по ширине не более 500, по высоте не более 1500.<br/> 
+            Выберите файл для загрузки: 
+            <input type="file" name="userfile">
+            <input type="submit" name="upload" value="Загрузить"> 
+            <input type="submit" value="Добавить" name="add" class="btn add_req"/>        
+            <a href="index.php" class="btn back">Назад</a>            
         </form>
     </div>
-'; 
-
-print $inner_html;   
-?>
-
+<?
+if (isset ($_POST['upload'])) {
+    $uploaddir = 'images/';  
+    // Имя изображения  
+    $apend=date('YmdHis').rand(100,1000).'.jpg';      
+    $uploadfile = "$uploaddir$apend"; 
+    
+    // Проверка загружаемого изображения
+    if(($_FILES['userfile']['type'] == 'image/gif' || 
+        $_FILES['userfile']['type'] == 'image/jpeg' || 
+        $_FILES['userfile']['type'] == 'image/png') && 
+        ($_FILES['userfile']['size'] != 0 and $_FILES['userfile']['size']<=512000)) { 
+     
+        if (move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile)) {         
+            $size = getimagesize($uploadfile);
+            // Проверка ширины и высоты        
+            if ($size[0] < 501 && $size[1]<1501) {                  
+                print "Файл загружен.";
+                $_SESSION['file'] = $uploadfile;
+            } 
+            else {
+                print "Загружаемое изображение превышает допустимые нормы (ширина не более - 500; высота не более 1500)"; 
+                unlink($uploadfile);              
+            } 
+       } 
+       else print "Файл не загружен, вернитеcь и попробуйте еще раз";      
+    } 
+    else print "Размер файла до 512Кб";     
+}
+?>    
 </main>
 </body>
 </html>

@@ -97,6 +97,8 @@
     .back {
         position: relative;        
         padding: 7px 20px;
+        top: 45px;
+        right: 520px;
     }
     
     .xml {
@@ -125,5 +127,11 @@
         position: relative;
         top: 20px;        
     }
+    
+    .add_req {
+        top: 45px;
+        right: 520px;
+    }
+    
     
 </style>

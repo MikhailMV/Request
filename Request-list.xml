@@ -48,4 +48,12 @@
 			И вновь заявка
 		</request_name>
 	</Заявка_6>
+	<Заявка_7>
+		<login_user>
+			admin
+		</login_user>
+		<request_name>
+			123
+		</request_name>
+	</Заявка_7>
 </Список_заявок>

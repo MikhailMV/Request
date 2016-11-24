@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Ноя 13 2016 г., 19:53
+-- Время создания: Ноя 24 2016 г., 20:54
 -- Версия сервера: 5.5.50
 -- Версия PHP: 5.3.29
 
@@ -29,22 +29,24 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `request` (
   `id_request` int(11) NOT NULL,
   `owner_id` int(11) NOT NULL,
-  `request_name` varchar(30) NOT NULL,
+  `request_name` varchar(70) NOT NULL,
   `description` text NOT NULL,
-  `phone` bigint(20) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+  `phone` bigint(20) NOT NULL,
+  `image` varchar(40) DEFAULT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 --
 -- Дамп данных таблицы `request`
 --
 
-INSERT INTO `request` (`id_request`, `owner_id`, `request_name`, `description`, `phone`) VALUES
-(1, 3, 'Заявка', 'Полная неисправность', 223344),
-(2, 4, 'заявка2', 'Вообще жесть', 123456),
-(6, 2, 'Заявка 3', 'Тест производительности', 334455),
-(7, 4, 'Заявка 4', 'Тест производительности 2', 123456),
-(8, 4, 'Очередная заявка', 'Еще один тест', 123456),
-(9, 4, 'И вновь заявка', 'Очередные неполадки', 123456);
+INSERT INTO `request` (`id_request`, `owner_id`, `request_name`, `description`, `phone`, `image`) VALUES
+(1, 3, 'Заявка', 'Полная неисправность', 223344, NULL),
+(2, 4, 'заявка2', 'Вообще жесть', 123456, NULL),
+(6, 2, 'Заявка 3', 'Тест производительности', 334455, NULL),
+(7, 4, 'Заявка 4', 'Тест производительности 2', 123456, NULL),
+(8, 4, 'Очередная заявка', 'Еще один тест', 123456, NULL),
+(9, 4, 'И вновь заявка', 'Очередные неполадки', 123456, NULL),
+(10, 2, '123', 'Тест производительности', 123, 'images/20161122174847270.jpg');
 
 -- --------------------------------------------------------
 
@@ -96,7 +98,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `request`
 --
 ALTER TABLE `request`
-  MODIFY `id_request` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
+  MODIFY `id_request` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT для таблицы `users`
 --

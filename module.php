@@ -28,7 +28,7 @@ class auth {
         
 		// Возвращаем массив ошибок или положительный ответ
 		if (isset($error)) return $error;
-		else return 'good';
+		else return true;
 	}
     
 	/**
@@ -36,12 +36,12 @@ class auth {
     *  
     */
 	function reg($login, $passwd, $passwd2, $chbox) {
-		if (($this->check_new_user($login, $passwd, $passwd2))=='good') {            
+		if (($this->check_new_user($login, $passwd, $passwd2))===true) {            
             
             // Проверка переданных данных
             global $dbh;            
-            $login = str_replace("'", "", ($dbh->quote($_POST["login"])));
-            $passwd = str_replace("'", "", ($dbh->quote($_POST["passwd"])));            
+            $login = strip_tags($_POST["login"]);
+            $passwd = $_POST["passwd"];            
             $passwd = md5($passwd.'lol'); // хеш пароля с добавкой
             $is_admin;
             if($chbox!=NULL) 
@@ -81,8 +81,8 @@ class auth {
 	function authorization() {
         
         global $dbh;
-        $login = str_replace("'", "", ($dbh->quote($_POST["login"])));
-        $passwd = str_replace("'", "", ($dbh->quote($_POST["passwd"])));
+        $login = strip_tags($_POST["login"]);
+        $passwd = $_POST["passwd"];
         $passwd = md5($passwd.'lol');
         
         // проверка существования логина и пароля
@@ -94,15 +94,16 @@ class auth {
         $result = $stmt->FETCH(PDO::FETCH_ASSOC);
         
         // проверка существования логина
-        $stmt = $dbh->prepare('SELECT * FROM users WHERE login_user = :login');        
+        $stmt = $dbh->prepare('SELECT id_user FROM users WHERE login_user = :login');        
         $stmt->bindParam(':login', $login);
         $stmt->execute();
         $exist = $stmt->FETCH(PDO::FETCH_ASSOC);
-        
+       
 		if ($result) {
 			// пользователь найден в бд, логин совпадает с паролем			
             $_SESSION['is_admin']=$result["is_admin"];
-			$_SESSION['login_user']=$login;                       
+			$_SESSION['login_user']=$login;
+            $_SESSION['id_user']=$exist["id_user"];                       
 			return true;
 		} 
         else {
@@ -169,7 +170,11 @@ function get_request_table() {
         // Скачать заявки в xml
         if (isset($_GET['xml'])) {                 
             $file = 'Request-list.xml';
-            file_put_contents($file, create_XML($result));
+            file_put_contents($file, create_XML($result));            
+            // Открываем XML в новой вкладке
+            print "<script type='text/javascript'>
+                window.open('Request-list.xml', '_blank'); 
+                </script>";
         } 
     }
 
@@ -182,9 +187,8 @@ function get_request_table() {
         // Информация из базы
         global $dbh;
         $stmt =  $dbh->prepare('SELECT request_name
-                                FROM request WHERE owner_id = 
-                                (SELECT id_user FROM users WHERE login_user = :login)');
-        $stmt->bindParam(':login', $_SESSION['login_user']);
+                                FROM request WHERE owner_id = :id');
+        $stmt->bindParam(':id', $_SESSION['id_user']);
         $stmt->execute();
         $result = $stmt->FETCHALL(PDO::FETCH_ASSOC);
         
@@ -248,8 +252,12 @@ function create_XML($res_table) {
 function check_add_data($req_name, $description, $phone) {
     if (empty($req_name) or empty($description) or empty($phone))
             $error[]='Все поля обязательны для заполнения';
-    if (strlen($description)<10) 
-            $error[]='Описание должно быть не менее 10 символов';    
+    if (strlen($description)<10 or strlen($description)>1000) 
+            $error[]='Описание должно быть от 10 до 1000 символов';
+    if (strlen($req_name)<3 or strlen($req_name)>70) 
+            $error[]='Название должно быть от 3 до 70 символов';
+    if (strlen($phone)<3 or strlen($phone)>18) 
+            $error[]='Номер телефона должен быть от 3 до 18 цифр';    
     if (!preg_match("|^[\d]+$|", $phone)) 
             $error[]='Номер телефона должен состоять из цифр без пробелов';
             
@@ -258,7 +266,7 @@ function check_add_data($req_name, $description, $phone) {
         $_SESSION['error'] = $error;
         return false;        
     }
-	else return 'good';
+	else return true;
 }
 
 /**
@@ -269,25 +277,25 @@ function add_new_request($req_name, $description, $phone) {
     
     // Проверка переданных данных
     global $dbh;
-    $login = str_replace("'", "", $dbh->quote($_SESSION['login_user']));
-    $req_name = str_replace("'", "", $dbh->quote($req_name));
-    $description = str_replace("'", "", $dbh->quote($description));
-    $phone = str_replace("'", "", $dbh->quote($phone));
-        
-    // Получим owner_id из базы
-    $stmt =  $dbh->prepare('SELECT id_user FROM users WHERE login_user = :login');        
-    $stmt->bindParam(':login', $login);
-    $stmt->execute();
-    $id = $stmt->FETCH(PDO::FETCH_ASSOC);
-        
+    $id = strip_tags($_SESSION['id_user']);
+    $req_name = strip_tags($req_name);
+    $description = strip_tags($description);
+    $phone = strip_tags($phone);
+    $img = strip_tags($_SESSION['file']);
+     
     // Добавление проверенных данных в базу
-    $data = array($id['id_user'], $req_name, $description, $phone);        
-    $stmt1 = $dbh->prepare('INSERT INTO request (owner_id, request_name, description, phone) 
-                            VALUES (?, ?, ?, ?) ');            
-    if($stmt1->execute($data))
-        return true;            
+    $data = array($id, $req_name, $description, $phone, $img);            
+    $stmt1 = $dbh->prepare('INSERT INTO request (owner_id, request_name, description, phone, image) 
+                            VALUES (?, ?, ?, ?, ?) ');            
+    if($stmt1->execute($data)) {
+        // переходим на главную после добавления заявки
+        print "<script type='text/javascript'>
+               window.location = 'index.php?stress'
+               </script>";
+        return true; 
+    }                   
     else {
-        print 'Возникла ошибка при добавлении заявки.';
+        print 'Возникла ошибка при добавлении заявки в базу данных.';
         return false;
     }
 }

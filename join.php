@@ -13,33 +13,37 @@ include_once 'conf.php';
 
 <?php
 $reg = new auth();
-
-// Форма авторизации
-$form = '
+if (isset($_POST['send'])): ?>
+	<? if ($reg->reg($_POST['login'], $_POST['passwd'], $_POST['passwd2'], $_POST['chbox'])): ?> 
+		<div class="join">
+            <h2>Регистрация успешна.</h2>
+            Вы можете войти<br/> 
+            <a href="index.php" class="btn after-auth">Авторизоваться</a>
+        </div>
+	<? else: ?>
+        <div class="join">
+            <a href="index.php" class="btn auth">Авторизоваться</a><br/>
+            <form action="" method="post" class="auth-form">
+                Логин <input type="text" name="login" value="<?isset($_POST['login']) ? $_POST['login'] :''?>" class="login"/><br />
+                Пароль <input type="password" name="passwd"/><br />
+                Пароль <input type="password" name="passwd2"/><br />
+                Администратор <input type="checkbox" name="chbox"/><br/>
+                <input type="submit" value="Регистрация" name="send" class="btn"/>
+            </form>
+        </div>
+    <? endif ?>
+<? else: ?>
     <div class="join">
         <a href="index.php" class="btn auth">Авторизоваться</a><br/>
         <form action="" method="post" class="auth-form">
-            Логин <input type="text" name="login" value="'.@$_POST['login'].'" class="login"/><br />
+            Логин <input type="text" name="login" value="<?isset($_POST['login']) ? $_POST['login'] :''?>" class="login"/><br />
             Пароль <input type="password" name="passwd"/><br />
             Пароль <input type="password" name="passwd2"/><br />
             Администратор <input type="checkbox" name="chbox"/><br/>
-        <input type="submit" value="Регистрация" name="send" class="btn"/>
+            <input type="submit" value="Регистрация" name="send" class="btn"/>
         </form>
     </div>
-    ';
-
-// Вывод информации в случае успешной авторизации
-if (isset($_POST['send'])) {
-	if ($reg->reg($_POST['login'], $_POST['passwd'], $_POST['passwd2'], $_POST['chbox'])) {
-		print '<div class="join">
-    			   <h2>Регистрация успешна.</h2>
-    			   Вы можете войти<br/> 
-                   <a href="index.php" class="btn after-auth">Авторизоваться</a>
-               </div>.
-		       ';
-	} else print $form;
-} else print $form;
-?>
+<? endif ?>
 
 </main>
 </body>
